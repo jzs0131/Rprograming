@@ -1,0 +1,36 @@
+#makeCacheMatrix creates a special matrix object that can cache its inverse
+makeCacheMatrix <- function(x = matrix()) {
+    minv <- NULL
+    set <- function(y) {
+      x <<- y
+      minv <<- NULL
+    }
+    get <- function() x
+    
+    #setting inverse of the matrix using setinv
+    setinv <- function(matinv) minv <<- matinv
+    #getinv returns the inverse of matrix
+    getinv <- function() minv
+    list(set = set, get = get,
+         setinv = setinv,
+         getinv = getinv)
+}
+
+
+##cacheSolve returns the inverse of special matrix returned by makeCacheMatrix
+cacheSolve <- function(x, ...) {
+    
+    minv <- x$getinv()
+    
+    ##checking whether inverse of matrix is cached,if yes returns cached value
+    if(!is.null(minv)) {
+      message("getting cached data")
+      return(minv)
+    }
+    ##calculating matrix inverse as it is not already cached
+    mat <- x$get()
+    minv <- solve(mat, ...)
+    x$setinv(minv)
+    ## Returning a matrix that is the inverse of 'x'
+    minv
+}
